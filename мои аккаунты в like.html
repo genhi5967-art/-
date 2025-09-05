@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои аккаунты в Likee</title>
+    <style>
+        :root {
+            --main-bg-color: #0a0a0a;
+            --main-text-color: #ffffff;
+            --accent-color: #ffcc00;
+            --card-bg-color: #1a1a1a;
+            --border-color: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body {
+            background-color: var(--main-bg-color);
+            color: var(--main-text-color);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .settings-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--main-text-color);
+            padding: 10px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .settings-panel {
+            background-color: var(--card-bg-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .settings-panel h2 {
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+        
+        .settings-option {
+            margin-bottom: 20px;
+        }
+        
+        .settings-option h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .color-option.active {
+            border-color: white;
+        }
+        
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            background: var(--card-bg-color);
+            border-radius: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--main-text-color);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+        
+        .btn h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        .btn p {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        .chat-section {
+            background: var(--card-bg-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .chat-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+        
+        .contact-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-option {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: var(--main-text-color);
+        }
+        
+        .contact-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .contact-option i {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: var(--accent-color);
+            width: 30px;
+        }
+        
+        .contact-option .text {
+            flex: 1;
+        }
+        
+        .contact-option .action {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .copy-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color);
+            color: black;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        
+        .news-section {
+            background: var(--card-bg-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .news-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+        
+        .news-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .news-item h3 {
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 30px;
+        }
+        
+        .share-section {
+            background: var(--card-bg-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .share-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+        
+        .share-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .share-option {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .share-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .share-option i {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            color: var(--accent-color);
+            width: 30px;
+        }
+        
+        .share-option .text {
+            flex: 1;
+        }
+        
+        .instructions {
+            background: var(--card-bg-color);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .instructions h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+        
+        .instruction-step {
+            margin-bottom: 20px;
+            padding-left: 20px;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .instruction-step h3 {
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            .buttons-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">Мои аккаунты Likee</div>
+            <button class="settings-btn" id="settingsToggle">
+                <i class="fas fa-cog"></i> Настройки
+            </button>
+        </header>
+        
+        <div class="settings-panel" id="settingsPanel">
+            <h2>Настройки сайта</h2>
+            
+            <div class="settings-option">
+                <h3>Цветовая тема</h3>
+                <div class="color-options">
+                    <div class="color-option active" style="background-color: #ffcc00;" data-color="#ffcc00"></div>
+                    <div class="color-option" style="background-color: #ff55a5;" data-color="#ff55a5"></div>
+                    <div class="color-option" style="background-color: #4caf50;" data-color="#4caf50"></div>
+                    <div class="color-option" style="background-color: #9c27b0;" data-color="#9c27b0"></div>
+                    <div class="color-option" style="background-color: #2196f3;" data-color="#2196f3"></div>
+                    <div class="color-option" style="background-color: #ff9800;" data-color="#ff9800"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Новая секция: Поделиться сайтом -->
+        <div class="share-section">
+            <h2>Поделиться сайтом</h2>
+            <p style="text-align: center; margin-bottom: 20px;">Скопируйте ссылку на этот сайт и разместите её в своих аккаунтах:</p>
+            
+            <div class="share-options">
+                <div class="share-option" id="copySiteLink">
+                    <i class="fas fa-link"></i>
+                    <div class="text">
+                        <div>Скопировать ссылку на сайт</div>
+                        <div class="action">Нажмите чтобы скопировать URL этого сайта</div>
+                    </div>
+                    <i class="fas fa-copy"></i>
+                </div>
+                
+                <a href="https://l.likee.video/p/ouKwYm" class="share-option" target="_blank">
+                    <i class="fas fa-share-alt"></i>
+                    <div class="text">
+                        <div>Как разместить ссылку в Likee</div>
+                        <div class="action">Инструкция по добавлению ссылки в профиль</div>
+                    </div>
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="buttons-grid">
+            <a href="https://share.like-video.com/e/g/vTmOUKfiNyb/-RU" class="btn" target="_blank">
+                <i class="fas fa-user"></i>
+                <h3>Первый аккаунт</h3>
+                <p>Перейти на мой основной аккаунт в Likee</p>
+            </a>
+            
+            <a href="#" class="btn" id="secondAccount">
+                <i class="fas fa-user-plus"></i>
+                <h3>Второй аккаунт</h3>
+                <p>Скоро появится новый аккаунт! Оставайтесь на связи</p>
+            </a>
+            
+            <a href="https://l.likee.video/p/ouKwYm" class="btn" target="_blank">
+                <i class="fas fa-heart"></i>
+                <h3>Лучший друг</h3>
+                <p>Перейти на страницу моего лучшего друга в Likee</p>
+            </a>
+        </div>
+        
+        <!-- Новая секция: Инструкция -->
+        <div class="instructions">
+            <h2>Где разместить ссылку на сайт</h2>
+            
+            <div class="instruction-step">
+                <h3>1. В Likee профиле</h3>
+                <p>Добавьте ссылку на этот сайт в разделе "Сайт" вашего Likee профиля. Так все посетители вашей страницы смогут перейти на сайт.</p>
+            </div>
+            
+            <div class="instruction-step">
+                <h3>2. В описании видео</h3>
+                <p>Добавляйте ссылку в описание каждого вашего видео. Напишите призыв к действию: "Все мои аккаунты здесь: [ссылка]".</p>
+            </div>
+            
+            <div class="instruction-step">
+                <h3>3. В социальных сетях</h3>
+                <p>Разместите ссылку в профилях других социальных сетей (Instagram, ВКонтакте, Telegram).</p>
+            </div>
+            
+            <div class="instruction-step">
+                <h3>4. В личных сообщениях</h3>
+                <p>Отправляйте ссылку в ответ на вопросы о ваших аккаунтах в личных сообщениях.</p>
+            </div>
+        </div>
+        
+        <div class="chat-section">
+            <h2>Пообщаться со мной</h2>
+            <p style="text-align: center; margin-bottom: 20px;">Выберите удобный способ связи:</p>
+            
+            <div class="contact-options">
+                <a href="https://share.like-video.com/e/g/vTmOUKfiNyb/-RU" class="contact-option" target="_blank">
+                    <i class="fas fa-comment-dots"></i>
+                    <div class="text">
+                        <div>Написать в Likee</div>
+                        <div class="action">Перейти в чат на моем аккаунте</div>
+                    </div>
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+                
+                <div class="contact-option" id="copyEmail">
+                    <i class="fas fa-envelope"></i>
+                    <div class="text">
+                        <div>Скопировать email адрес</div>
+                        <div class="action">igcrpch34@gmail.com</div>
+                    </div>
+                    <i class="fas fa-copy"></i>
+                </div>
+            </div>
+            
+            <p style="text-align: center; margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
+                В Likee можно написать мне прямо в сообщения, не добавляя в друзья!
+            </p>
+        </div>
+        
+        <div class="news-section">
+            <h2>Новости аккаунтов</h2>
+            <div class="news-item">
+                <h3>Новый контент!</h3>
+                <p>Скоро на моем аккаунте появятся новые видео! Следите за обновлениями.</p>
+            </div>
+            <div class="news-item">
+                <h3>Скоро второй аккаунт</h3>
+                <p>Готовлю к запуску второй аккаунт. Обещаю, будет интересно!</p>
+            </div>
+            <div class="news-item">
+                <h3>Общение в Likee</h3>
+                <p>Теперь можно написать мне прямо в Likee без добавления в друзья! Просто перейдите по кнопке выше.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 Мои аккаунты в Likee. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <div class="copy-notification" id="copyNotification">
+        Email скопирован!
+    </div>
+    
+    <div class="copy-notification" id="copyLinkNotification">
+        Ссылка скопирована!
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const settingsToggle = document.getElementById('settingsToggle');
+            const settingsPanel = document.getElementById('settingsPanel');
+            const colorOptions = document.querySelectorAll('.color-option');
+            const copyEmailBtn = document.getElementById('copyEmail');
+            const copySiteLinkBtn = document.getElementById('copySiteLink');
+            const copyNotification = document.getElementById('copyNotification');
+            const copyLinkNotification = document.getElementById('copyLinkNotification');
+            
+            // Переключение панели настроек
+            settingsToggle.addEventListener('click', function() {
+                if (settingsPanel.style.display === 'block') {
+                    settingsPanel.style.display = 'none';
+                } else {
+                    settingsPanel.style.display = 'block';
+                }
+            });
+            
+            // Смена цвета акцента
+            colorOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const color = this.getAttribute('data-color');
+                    document.documentElement.style.setProperty('--accent-color', color);
+                    
+                    // Обновляем активный класс
+                    colorOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Обработчик для кнопки второго аккаунта
+            document.getElementById('secondAccount').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Второй аккаунт скоро появится! Следите за обновлениями.');
+            });
+            
+            // Копирование email в буфер обмена
+            copyEmailBtn.addEventListener('click', function() {
+                const email = 'igcrpch34@gmail.com';
+                
+                // Используем современный API для копирования
+                navigator.clipboard.writeText(email).then(() => {
+                    // Показываем уведомление
+                    copyNotification.style.opacity = '1';
+                    
+                    // Скрываем уведомление через 2 секунды
+                    setTimeout(() => {
+                        copyNotification.style.opacity = '0';
+                    }, 2000);
+                }).catch(err => {
+                    // Fallback для старых браузеров
+                    const textArea = document.createElement('textarea');
+                    textArea.value = email;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    // Показываем уведомление
+                    copyNotification.style.opacity = '1';
+                    
+                    // Скрываем уведомление через 2 секунды
+                    setTimeout(() => {
+                        copyNotification.style.opacity = '0';
+                    }, 2000);
+                });
+            });
+            
+            // Копирование ссылки на сайт
+            copySiteLinkBtn.addEventListener('click', function() {
+                const siteUrl = window.location.href;
+                
+                // Используем современный API для копирования
+                navigator.clipboard.writeText(siteUrl).then(() => {
+                    // Показываем уведомление
+                    copyLinkNotification.style.opacity = '1';
+                    
+                    // Скрываем уведомление через 2 секунды
+                    setTimeout(() => {
+                        copyLinkNotification.style.opacity = '0';
+                    }, 2000);
+                }).catch(err => {
+                    // Fallback для старых браузеров
+                    const textArea = document.createElement('textarea');
+                    textArea.value = si
